@@ -1,0 +1,16 @@
+node_modules/
+.env
+.DS_Store
+dist/
+build/
+coverage/
+*.log
+client/.env
+server/.env
+server/src/uploads/rfq-attachments/*
+server/src/uploads/invoice-pdfs/*
+!server/src/uploads/rfq-attachments/.gitkeep
+!server/src/uploads/invoice-pdfs/.gitkeep
+.docx_ql/
+.docx_render_vendorbridge/
+
