@@ -6,7 +6,7 @@ const vendorSchema = new mongoose.Schema(
     companyName: { type: String, required: true, trim: true },
     email: { type: String, required: true, lowercase: true, trim: true },
     phone: { type: String, trim: true },
-    category: { type: String, required: true, trim: true },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: 'VendorCategory', required: true },
     gstNumber: { type: String, trim: true },
     address: { type: String, trim: true },
     status: {

@@ -20,14 +20,15 @@ const createVendor = asyncHandler(async (req, res) => {
 });
 
 const listVendors = asyncHandler(async (req, res) => {
-  const query = { ...buildRegexQuery(['name', 'companyName', 'email', 'category'], req.query.search) };
+  const query = { ...buildRegexQuery(['name', 'companyName', 'email'], req.query.search) };
   if (req.query.status) query.status = req.query.status;
-  const vendors = await Vendor.find(query).sort({ createdAt: -1 });
+  if (req.query.category) query.category = req.query.category;
+  const vendors = await Vendor.find(query).populate('category').sort({ createdAt: -1 });
   res.json(vendors);
 });
 
 const getVendor = asyncHandler(async (req, res) => {
-  const vendor = await Vendor.findById(req.params.id);
+  const vendor = await Vendor.findById(req.params.id).populate('category');
   if (!vendor) throw new ApiError(404, 'Vendor not found');
   res.json(vendor);
 });

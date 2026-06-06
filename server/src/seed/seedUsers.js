@@ -34,9 +34,17 @@ const seedUsers = async () => {
 
     // Ensure demo vendor records exist and attach to vendor user
     const Vendor = require('../models/Vendor');
+    const VendorCategory = require('../models/VendorCategory');
+
+    // Look up category IDs for demo vendors
+    const allCategories = await VendorCategory.find().lean();
+    const catByName = {};
+    allCategories.forEach((c) => { catByName[c.name.toLowerCase()] = c._id; });
+    const randomCat = () => allCategories[Math.floor(Math.random() * allCategories.length)]._id;
+
     const demoVendors = [
-      { name: 'Acme Supplies', companyName: 'Acme Supplies Pvt Ltd', email: 'acme@vendorbridge.local', category: 'Raw Materials' },
-      { name: 'Global Traders', companyName: 'Global Traders LLC', email: 'global@vendorbridge.local', category: 'Services' }
+      { name: 'Acme Supplies', companyName: 'Acme Supplies Pvt Ltd', email: 'acme@vendorbridge.local', category: catByName['raw materials'] || randomCat() },
+      { name: 'Global Traders', companyName: 'Global Traders LLC', email: 'global@vendorbridge.local', category: catByName['logistics & transport'] || randomCat() }
     ];
 
     const createdVendors = [];

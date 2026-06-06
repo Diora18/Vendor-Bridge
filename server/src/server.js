@@ -1,9 +1,11 @@
 const app = require('./app');
 const connectDb = require('./config/db');
 const env = require('./config/env');
+const seedCategories = require('./seed/seedCategories');
 
 const startServer = async () => {
   await connectDb();
+  await seedCategories();
   app.listen(env.port, () => {
     console.log(`VendorBridge API running on port ${env.port}`);
   });

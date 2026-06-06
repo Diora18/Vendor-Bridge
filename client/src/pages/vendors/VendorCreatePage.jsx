@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Button from '../../components/common/Button';
 import Input from '../../components/common/Input';
 import PageHeader from '../../components/layout/PageHeader';
 import { createVendor } from '../../services/vendorService';
+import { listCategories } from '../../services/vendorCategoryService';
 
 const VendorCreatePage = () => {
 	const navigate = useNavigate();
@@ -17,8 +18,15 @@ const VendorCreatePage = () => {
 		address: '',
 		status: 'active'
 	});
+	const [categories, setCategories] = useState([]);
 	const [error, setError] = useState('');
 	const [portalInfo, setPortalInfo] = useState('');
+
+	useEffect(() => {
+		listCategories()
+			.then((data) => setCategories(Array.isArray(data) ? data : []))
+			.catch(() => setCategories([]));
+	}, []);
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
@@ -48,7 +56,15 @@ const VendorCreatePage = () => {
 				<Input label="Company name" value={form.companyName} onChange={(event) => setForm({ ...form, companyName: event.target.value })} required />
 				<Input label="Email" type="email" value={form.email} onChange={(event) => setForm({ ...form, email: event.target.value })} required />
 				<Input label="Phone" value={form.phone} onChange={(event) => setForm({ ...form, phone: event.target.value })} />
-				<Input label="Category" value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} required />
+				<label className="field">
+					<span>Category <span style={{ color: 'var(--color-danger, #ef4444)' }}>*</span></span>
+					<select value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} required>
+						<option value="">Select a category</option>
+						{categories.map((cat) => (
+							<option key={cat._id} value={cat._id}>{cat.name}</option>
+						))}
+					</select>
+				</label>
 				<Input label="GST number" value={form.gstNumber} onChange={(event) => setForm({ ...form, gstNumber: event.target.value })} />
 				<label className="field">
 					<span>Address</span>
@@ -71,4 +87,3 @@ const VendorCreatePage = () => {
 };
 
 export default VendorCreatePage;
-

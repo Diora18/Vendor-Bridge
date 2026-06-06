@@ -3,15 +3,24 @@ import { Link } from 'react-router-dom';
 import Button from '../../components/common/Button';
 import PageHeader from '../../components/layout/PageHeader';
 import { listVendors } from '../../services/vendorService';
+import { listCategories } from '../../services/vendorCategoryService';
 
 const statusOptions = ['all', 'active', 'inactive', 'blacklisted'];
 
 const VendorListPage = () => {
 	const [vendors, setVendors] = useState([]);
+	const [categories, setCategories] = useState([]);
 	const [search, setSearch] = useState('');
 	const [status, setStatus] = useState('all');
+	const [categoryFilter, setCategoryFilter] = useState('all');
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState('');
+
+	useEffect(() => {
+		listCategories()
+			.then((data) => setCategories(Array.isArray(data) ? data : []))
+			.catch(() => setCategories([]));
+	}, []);
 
 	useEffect(() => {
 		const controller = new AbortController();
@@ -24,6 +33,7 @@ const VendorListPage = () => {
 				const params = {};
 				if (search.trim()) params.search = search.trim();
 				if (status !== 'all') params.status = status;
+				if (categoryFilter !== 'all') params.category = categoryFilter;
 
 				const data = await listVendors(params, { signal: controller.signal });
 				setVendors(Array.isArray(data) ? data : []);
@@ -39,7 +49,7 @@ const VendorListPage = () => {
 		loadVendors();
 
 		return () => controller.abort();
-	}, [search, status]);
+	}, [search, status, categoryFilter]);
 
 	return (
 		<section>
@@ -55,10 +65,19 @@ const VendorListPage = () => {
 						<span>Search</span>
 						<input
 							className="search"
-							placeholder="Search vendor name, company, email, or category"
+							placeholder="Search vendor name, company, or email"
 							value={search}
 							onChange={(event) => setSearch(event.target.value)}
 						/>
+					</label>
+					<label className="field" style={{ width: 200, marginBottom: 0 }}>
+						<span>Category</span>
+						<select value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
+							<option value="all">All categories</option>
+							{categories.map((cat) => (
+								<option key={cat._id} value={cat._id}>{cat.name}</option>
+							))}
+						</select>
 					</label>
 					<label className="field" style={{ width: 180, marginBottom: 0 }}>
 						<span>Status</span>
@@ -100,7 +119,7 @@ const VendorListPage = () => {
 										<div>{vendor.email}</div>
 										<div>{vendor.phone || 'No phone provided'}</div>
 									</td>
-									<td>{vendor.category}</td>
+									<td>{vendor.category?.name || vendor.category || '—'}</td>
 									<td><span className={`badge badge-neutral`}>{vendor.status}</span></td>
 									<td>{typeof vendor.rating === 'number' ? vendor.rating.toFixed(1) : '0.0'}</td>
 								</tr>
@@ -118,4 +137,3 @@ const VendorListPage = () => {
 };
 
 export default VendorListPage;
-
