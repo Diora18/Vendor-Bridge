@@ -150,7 +150,7 @@ Password for all seeded accounts: **`Password@123`**
 | Vendor (demo) | `vendor@vendorbridge.local` | Linked to Acme Supplies — submit quotations |
 | Vendor (by company email) | e.g. `acme@vendorbridge.local` | Portal login for that vendor record |
 
-When you **create a new vendor**, a portal user is auto-created using the vendor’s email with password `Password@123`.
+This are just demo data for quick access we can also create vendor by takingg their details and then when they login from that details they will also be able to submit quotations which are assigned to them
 
 ---
 
