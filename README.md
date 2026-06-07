@@ -76,7 +76,7 @@ Optional for email:
 ### 1. Clone and install
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Diora18/Vendor-Bridge.git
 cd Vendor-Bridge
 
 npm install
